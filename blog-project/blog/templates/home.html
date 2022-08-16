@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+
+<title>Home Page</title>
+
+<style>
+  body {
+    font-family: "Roboto", sans-serif;
+    font-size: 18px;
+    background-color: #fdfdfd;
+  }
+
+  .head_text {
+    color: white;
+  }
+
+  .card {
+    /* box-shadow: 0 16px 48px #E3E7EB; */
+  }
+</style>
+
+<body>
+
+  <div class="container-fluid">
+    <!-- Content Row -->
+    <div class="row">
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Blogs</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ blogs|length }}</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-clipboard fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Views</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_views }}</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-eye fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Registered Users</div>
+                <div class="row no-gutters align-items-center">
+                  <div class="col-auto">
+                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ total_registered_users }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-user-friends fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Today's Blogs</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_blogs_monthly }}</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-comments fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br />
+
+  <div class="row container-fluid">
+    {% for blog in blogs %}
+    <div class="col-lg-3 mb-4">
+      <div class="card bg-success text-white text-center shadow">
+        <div class="card-body">
+          <h2 class="card-title">{{ blog.titleInShort }}</h2>
+          <p class="card-text h6">{{ blog.topic }}</p>
+          <p class="card-text h6">{{ blog.author.first_name }} | {{ blog.pub_date_pretty}}</p>
+          <p class="card-text">Views: {{ blog.views_total }}</p>
+          <br />
+          <a href="{% url 'viewblog' blog.id  %}" class="btn btn-primary">Read &rarr;</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+
+</body>
+
+
+{%endblock%}

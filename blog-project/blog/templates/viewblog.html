@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% load static %}
+
+<title>{{ blog.title }}</title>
+
+<link rel="stylesheet" href="{% static 'widgEditor/css/widgEditor.css' %}" />
+<script src="{% static 'widgEditor/scripts/widgEditor.js' %}"></script>
+
+<script src="http://tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+
+<style>
+  .mce-container {
+    border: 0px !important;
+  }
+
+  body {
+    font-family: "Roboto", sans-serif;
+    font-size: 18px;
+    background-color: #fdfdfd;
+  }
+
+  .card {
+    box-shadow: 0 16px 48px #E3E7EB;
+  }
+</style>
+
+<body class="bg-info">
+
+  <main role="main">
+
+    <div class="container">
+
+      <div class="border-bottom my-0">
+        <h1 class="text-center"><u>{{ blog.title }}</u></h1>
+
+        <h3 class="text-center">By {{ blog.author.get_full_name }}</h3>
+
+        <p class="text-center"> {{ blog.pub_date_pretty }} </p>
+      </div>
+
+      <br />
+
+      <textarea id="TypeHere" class="mceNonEditable" name="body" readonly="true">{{blog.body}}</textarea>
+
+      <script type="application/x-javascript">
+        tinymce.init({
+          selector: '#TypeHere',
+          menubar: false,
+          statusbar: false,
+          toolbar: false,
+          plugins: "autoresize",
+          readonly: 1,
+          inline_boundaries: false
+        });
+      </script>
+
+      <br />
+
+
+    </div>
+  </main>
+
+
+</body>
+
+<footer>
+
+  <div class="text-center">
+
+    <a href="{% url 'home' %}" class="ml-1 btn btn-primary btn-lg">
+      <center>All blogs</center>
+    </a>
+
+  </div>
+
+</footer>
+
+
+{%endblock%}

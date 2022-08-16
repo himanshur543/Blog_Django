@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+
+<title>Edit Blog</title>
+
+{% load static %}
+
+<script type="text/javascript">
+  function fill() {
+
+    document.getElementById("inputId").value = "{{ blog.id }}";
+
+    document.getElementById("inputTitle").value = "{{ blog.title }}";
+
+    document.getElementById("inputTopic").value = "{{ blog.topic }}";
+
+  }
+</script>
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+<script src="http://tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+
+<style>
+  .form-control-inline {
+    min-width: 222px;
+    width: auto;
+    display: inline;
+  }
+
+  #adjustwidth {
+    width: 150px;
+  }
+</style>
+
+
+<body onload="fill()" class="text-center bg-info text-body">
+
+  <br />
+
+  <form method="POST" action="{% url 'editblog' blog.id %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <h1 class="h3 mb-3 font-weight-normal">Edit blog</h1>
+
+    <input id="inputId" type="hidden" name="id">
+
+    <br />
+    <label for="inputTitle" class="sr-only">Title</label>
+    <input type="text" id="inputTitle" class="form-control form-control-inline" name="title" required />
+    <br />
+    <br />
+
+    <label for="inputTopic" class="sr-only">Topic</label>
+    <select type="text" id="inputTopic" class="form-control form-control-inline adjustwidth" name="topic" required>
+      <option value="">Choose Topic</option>
+      <option value="World">World</option>
+      <option value="Technology">Technology</option>
+      <option value="Design">Design</option>
+      <option value="Culture">Culture</option>
+      <option value="Business">Business</option>
+      <option value="Politics">Politics</option>
+      <option value="Opinion">Opinion</option>
+      <option value="Science">Science</option>
+      <option value="Health">Health</option>
+      <option value="Style">Style</option>
+      <option value="Travel">Travel</option>
+      <option value="Life">Life</option>
+    </select>
+    <br />
+    <br />
+
+    <textarea id="TypeHere" class="mceNonEditable" name="body" readonly="true">{{blog.body}}</textarea>
+
+    <script type="application/x-javascript">
+      tinymce.init({
+        selector: '#TypeHere',
+        menubar: false,
+        statusbar: false,
+        plugins: "autoresize",
+      });
+    </script>
+
+    <br />
+    <br />
+    <button class="btn btn-lg btn-primary mr-2" type="submit">Save Blog</button>
+
+    <button class="btn btn-lg btn-primary " onclick="window.location.href='/userblog'">Cancel</button>
+
+  </form>
+
+
+
+  <br />
+
+  <footer class="text-body">
+    <div class="container text-center">
+    </div>
+  </footer>
+
+
+</body>
+
+{%endblock%}

@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<title>{{ user.get_full_name }}'s Blog</title>
+<style>
+    body {
+        font-family: "Roboto", sans-serif;
+        font-size: 18px;
+        background-color: #fdfdfd;
+    }
+
+    .head_text {
+        color: white;
+    }
+
+    .card {
+        /* box-shadow: 0 16px 48px #E3E7EB; */
+    }
+
+    .Center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn {
+    width:70px;
+    padding:5px;
+    }
+
+</style>
+
+<script type="text/javascript">
+
+function loadcharts(){
+
+  if({{ userblogs|length }}==0){
+    document.getElementById("top_topics_chart").style.display="none";
+    document.getElementById("top_blogs_chart").style.display="none";
+  }
+
+}
+
+</script>
+
+<body onload="loadcharts()">
+
+  <div class="container-fluid">
+  <!-- Content Row -->
+  <div class="row container-fluid">
+
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Your Blogs</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ userblogs|length }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-clipboard fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Views</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_views }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-eye fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Today's Blogs</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_blogs_monthly }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-comments fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+<div class="row container-fluid">
+  <div id="top_topics_chart" style="width: 560px; height: 400px;"></div>
+  <div id="top_blogs_chart" style="width: 560px; height: 400px;"></div>
+</div>
+
+<script>
+    var chart = document.getElementById('top_topics_chart');
+    var myChart = echarts.init(chart);
+    var option = {
+      title: { text: 'Views By Topic',
+               left: 'center',
+               textStyle:{
+                    color:'#000000'
+               }
+             },
+      tooltip: { },
+      xAxis: { data: [
+          {% for topic, views in topicwise_views.items %}
+              "{{ topic }}",
+              {% endfor %}
+       ],
+       axisLabel: {
+          rotate: 45
+       }
+     },
+      yAxis: { interval:1 },
+      series: [{
+        name: 'Topicwise Views',
+        type: 'bar',
+        data: [
+          {% for topic, views in topicwise_views.items %}
+              {{ views }},
+            {% endfor %}
+          ],
+         color:[ '#407A7D']
+      }]
+    };
+    myChart.setOption(option);
+</script>
+
+<script>
+      var chart = document.getElementById('top_blogs_chart');
+      var myChart = echarts.init(chart);
+      var option = {
+          title: { text: 'Views By Blog',
+                   left: 'center',
+                   textStyle:{
+                        color:'#000000'
+                   }
+                  },
+          grid: {show: false},
+          tooltip: { },
+          xAxis: {
+            data: [
+              {% for title, views in trending_blogs.items %}
+                  "{{ title }}",
+                  {% endfor %}
+           ],
+           showGrid: false,
+           axisLabel: {
+              rotate: 15
+           }
+          },
+          yAxis: { interval:1 },
+          series: [{
+            name: 'Blogwise Views',
+            type: 'bar',
+            data: [
+              {% for title, views in trending_blogs.items %}
+                  {{ views }},
+                {% endfor %}
+              ],
+            color:[ '#407A7D'],
+            splitLine: {
+              show: false
+            }
+          }]
+        };
+        myChart.setOption(option);
+</script>
+
+<br/>
+<br/>
+
+<a href="{% url 'addblog' %}" class="ml-4 btn-lg btn-primary">Add Blog</a>
+<br/>
+<br/>
+<!-- Color System -->
+<div class="row container-fluid">
+    {% for blog in userblogs %}
+  <div class="col-lg-3 mb-4">
+    <div class="card bg-success text-white text-center shadow">
+      <div class="card-body">
+        <h2 class="card-title">{{ blog.titleInShort }}</h2>
+        <p class="card-text h6">{{ blog.topic }}</p>
+        <p class="card-text h6">{{ blog.author.first_name }} | {{ blog.pub_date_pretty}}</p>
+        <p class="card-text">Views: {{ blog.views_total }}</p>
+        <a href="{% url 'viewblog' blog.id  %}" class="btn btn-primary">Read &rarr;</a>
+        <br/>
+        <br/>
+        <a href="{% url 'editblog' blog.id  %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'deleteblog' blog.id  %}" onclick="if(!(confirm('Are you sure you want to delete this blog?'))) return false" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+
+{% else %}
+
+<h2><center> Please Log In To View Dashboard </center></h2>
+
+{% endif %}
+
+{%endblock%}
