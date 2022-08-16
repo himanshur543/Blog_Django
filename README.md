@@ -1,4 +1,4 @@
-# DevCom-Blog-Submission
+# Blogging 
 
 1. Home Page - This is the landing page of the website
 2. A dashboard gives key metrics about the blogs in the system
